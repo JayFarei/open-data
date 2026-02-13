@@ -1,6 +1,6 @@
 # open-data
 
-The software stack is changing so fast that the key principle for building something durable is to rely on an open data model. The logic layer is disposable. Models get replaced, frameworks get rewritten, orchestration patterns come and go. Your data doesn't have to.
+The software stack is changing so fast that one of the key principles I follow for building something durable is to rely on an open data model. The logic layer is disposable. Models get replaced, frameworks get rewritten, orchestration patterns come and go. Your data doesn't have to.
 
 Keep the data model in plain text and build intelligence through indexing. Files in folders. Markdown for content. YAML for structure. Naming conventions for organization. The smart stuff (search indices, link graphs, computed views) sits in a disposable layer on top. Delete it, rebuild it, replace it with something better. The files underneath don't care.
 
