@@ -125,6 +125,25 @@ Map each property to a type from the Obsidian-compatible type system:
 | **Validation** | CI/lint script checks all files against schemas | Pipeline-generated content |
 | **Strict** | Files rejected/quarantined if non-conforming | Production data systems |
 
+**Step 6: Apply the Frontmatter Boundary Test**
+
+For each candidate property, ask: **Would a different Markdown-based tool find
+this field meaningful and actionable?**
+
+| Answer | Placement | Examples |
+|--------|-----------|---------|
+| Yes, any Markdown tool can use it | **Frontmatter** (open data) | `tags`, `status`, `source_url`, `starred`, `prev_note: "[[slug]]"` |
+| No, requires the app to interpret | **App state** (`.<app-name>/state/`) | KG entity extractions, manual link merge decisions, confidence scores, UUID mappings |
+| Derived / regenerable | **Cache** (`.<app-name>/cache/`) | Search indices, computed backlink maps, tag counts |
+
+**Common frontmatter-worthy fields:** `title`, `type`, `created`, `modified`, `tags`, `status`,
+`source`, `author`, `aliases`, relationship links (`depends-on`, `owned-by`), `starred`,
+`priority`, `due-date`, `rating`.
+
+**Common app-state fields:** Entity extraction results, NLP annotations, manual merge/dedup
+decisions, user feedback on AI-generated content, internal UUID mappings, processing pipeline
+status, confidence scores.
+
 ---
 
 ## Decision 4: How Are Relationships Expressed?
@@ -242,12 +261,12 @@ The index is the derived data layer that makes files queryable. Define what it t
 | Approach | Persistence | Regeneration | Use case |
 |----------|-------------|-------------|----------|
 | In-memory only | None — rebuilt on startup | Always fresh | Small vaults, CLI tools |
-| JSON file in `.index/` | File-based | On demand | Medium vaults, simple tooling |
-| SQLite in `.index/` | File-based | On demand | Large vaults, complex queries |
+| JSON file in `.<app-name>/cache/` | File-based | On demand | Medium vaults, simple tooling |
+| SQLite in `.<app-name>/cache/` | File-based | On demand | Large vaults, complex queries |
 | IndexedDB | Browser storage | On demand | Web/Electron apps (Obsidian's approach) |
 
 **Critical rule:** The index MUST be regenerable from source files alone. It is
-a cache, not a data store. If `.index/` is deleted, the system must rebuild it
+a cache, not a data store. If `.<app-name>/cache/` is deleted, the system must rebuild it
 without data loss.
 
 ---
@@ -300,20 +319,23 @@ If the vault will be version-controlled or synced, decide early.
 
 **Should be tracked in git:**
 - All user content (`.md` files, assets)
-- Configuration (`.config/` minus ephemeral state)
+- App configuration (`.<app-name>/config/` minus ephemeral state and secrets)
+- App state (`.<app-name>/state/`) — contains irreplaceable user decisions
 - Schema definitions (`types.json`, `_schema.md` files)
 - Templates
 
 **Should be `.gitignore`d:**
-- Derived indices (`.index/`)
-- Workspace/UI state (`workspace.json`)
+- Cache / derived indices (`.<app-name>/cache/`)
+- Workspace/UI state (`.<app-name>/config/workspace.json`)
+- Secrets and API keys
 - Plugin binaries (if large; track `manifest.json` only)
 - OS files (`.DS_Store`, `Thumbs.db`)
 
 **Example `.gitignore`:**
 ```
-.index/
-.config/workspace.json
+.<app-name>/cache/
+.<app-name>/config/workspace.json
+.<app-name>/config/secrets.*
 .DS_Store
 Thumbs.db
 *.tmp
@@ -351,17 +373,22 @@ After working through all decisions, summarize in this format:
 - Typed link properties: [list]
 - Resolution algorithm: [shortest-path / relative / absolute]
 
-### Index
+### Index / Cache
 - Storage: [memory / JSON / SQLite / IndexedDB]
-- Location: [.index/ or equivalent]
+- Location: `.<app-name>/cache/`
 - Rebuild trigger: [startup / file-change / manual]
+
+### App State
+- Location: `.<app-name>/state/`
+- Contents: [list irreplaceable user decisions stored here]
+- Git-tracked: Yes
 
 ### Assets
 - Strategy: [centralized / co-located / sidecar]
 - Metadata approach: [frontmatter in sidecar / embedded in referencing note / none]
 
 ### Version Control
-- Tracked: [list]
-- Ignored: [list]
+- Tracked: [list, including `.<app-name>/config/` and `.<app-name>/state/`]
+- Ignored: [list, including `.<app-name>/cache/`]
 - Conflict strategy: [describe]
 ```

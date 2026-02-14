@@ -318,43 +318,55 @@ findable, linkable, and queryable without modifying the original file.
 
 ---
 
-## Pattern 8: Layered Configuration Separation
+## Pattern 8: Three-Layer Application Data Separation
 
-**Structure:** Application configuration, user preferences, and derived data are
-strictly separated from user content via a hidden config directory.
+**Structure:** All application data lives in a single hidden directory (`.<app-name>/`),
+strictly separated from user content and organized into three layers based on
+deletability and replaceability.
 
 ```
 vault/
-├── .config/                    # Layer: App configuration
-│   ├── app.json                # Core settings
-│   ├── types.json              # Property type registry
-│   ├── plugins/                # Plugin code and settings
-│   └── workspace.json          # Ephemeral UI state
-├── .index/                     # Layer: Derived/regenerable data
-│   ├── search-index.json       # Full-text search index
-│   ├── link-graph.json         # Resolved link map
-│   └── tag-index.json          # Tag → files mapping
-├── content/                    # Layer: User data (the actual value)
+├── .<app-name>/                # All application data in one place
+│   ├── config/                 # Layer: Settings & preferences
+│   │   ├── app.json            # Core settings
+│   │   ├── types.json          # Property type registry
+│   │   ├── plugins/            # Plugin/extension settings
+│   │   └── workspace.json      # Ephemeral UI state
+│   ├── state/                  # Layer: Irreplaceable app state
+│   │   ├── kg-links.json       # Manual knowledge graph corrections
+│   │   ├── entity-feedback.json # User-verified entity decisions
+│   │   └── merge-log.json      # Manual merge/dedup choices
+│   └── cache/                  # Layer: Regenerable derived data
+│       ├── search-index.json   # Full-text search index
+│       ├── link-graph.json     # Resolved link map
+│       └── tag-index.json      # Tag → files mapping
+├── content/                    # User data (the actual value)
 │   ├── projects/
 │   └── notes/
-└── .gitignore                  # Excludes .index/, workspace.json
+└── .gitignore                  # Excludes .<app-name>/cache/
 ```
 
 **Separation rules:**
-1. **User content** — Never touched by config changes. Survives app uninstall.
-2. **App configuration** — Settings, preferences, plugin data. Portable between
-   machines but not essential for data integrity.
-3. **Derived indices** — Always regenerable. Can be deleted and rebuilt.
-   Should be `.gitignore`d in version-controlled vaults.
-4. **Ephemeral state** — Workspace layout, cursor positions, open tabs.
-   Machine-specific, should never be synced.
+1. **User content** — Never touched by app data changes. Survives app uninstall.
+2. **App configuration** — Settings, preferences, plugin data. Deletable without
+   data loss. Portable between machines.
+3. **App state** — Operational data containing irreplaceable user decisions (manual
+   link corrections, entity feedback, merge choices). **Not deletable** without
+   losing user work. Must be git-tracked.
+4. **Cache** — Always regenerable from source files alone. Can be deleted and
+   rebuilt. Should be `.gitignore`d.
+5. **Frontmatter boundary** — A field belongs in frontmatter (open data) only if
+   a different Markdown-based tool would find it meaningful and actionable.
+   Otherwise it belongs in the app directory.
 
 **Tradeoffs:**
-- ✅ `rm -rf .config/ .index/` leaves user data perfectly intact
+- ✅ `rm -rf .<app-name>/config/ .<app-name>/cache/` leaves user data and decisions intact
+- ✅ Irreplaceable user decisions are protected in `state/`, not mixed into cache
 - ✅ Different apps can share the same content directory
-- ✅ Git workflows are clean (ignore derived data)
-- ⚠️ Requires discipline to maintain separation
+- ✅ Git workflows are clean (track config + state, ignore cache)
+- ⚠️ Requires discipline to classify data into the correct layer
 - ⚠️ Some tools conflate config and content by design
+- ⚠️ The state layer is a judgment call: data must contain irreplaceable user decisions to qualify
 
 ---
 
@@ -369,7 +381,7 @@ Patterns 1 + 2 + 3 + 4 + 6 + 8
 - Temporal partitioning within collections (Pattern 3)
 - Hub notes for curated topic views (Pattern 4)
 - Extract metadata from URLs, timestamps, source identifiers (Pattern 6)
-- Strict config separation for processing pipeline state (Pattern 8)
+- Three-layer app data separation for pipeline state, config, and cache (Pattern 8)
 
 **Project Management / CRM:**
 Patterns 1 + 2 + 5 + 4
@@ -391,4 +403,4 @@ Patterns 1 + 3 + 6 + 7 + 8
 - Temporal organization for feed items (Pattern 3)
 - Convention-based metadata from source APIs (Pattern 6)
 - Sidecars for non-text attachments (Pattern 7)
-- Strict separation of pipeline state from content (Pattern 8)
+- Three-layer separation of pipeline config, state, and cache from content (Pattern 8)

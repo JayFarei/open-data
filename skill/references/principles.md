@@ -35,11 +35,23 @@ is still readable text. A YAML block in a dumb editor is still key-value pairs.
 
 ## Principle 5: Separation of Concerns
 
-Application state (UI preferences, plugin configs, workspace layout) lives in a
-clearly separated directory (like `.obsidian/` or `.config/`). User data never
-co-mingles with app config in the same files.
+Application data lives in a single hidden app directory (`.<app-name>/`),
+separated from user content and organized into three layers:
 
-**Test:** Can you `rm -rf .config/` without losing any user data?
+| Layer | Contains | Deletable? | Git-tracked? |
+|-------|----------|------------|--------------|
+| `config/` | Settings, preferences, API keys | Yes (no data loss) | Yes (minus secrets + ephemeral) |
+| `state/` | Operational data with irreplaceable user decisions (manual link corrections, entity feedback, merge choices) | **No** (irreplaceable) | Yes |
+| `cache/` | Regenerable indices, search caches, computed views | Yes (rebuildable from source files) | No |
+
+**Frontmatter boundary test:** Would a different Markdown-based tool find this
+field meaningful and actionable? Yes → frontmatter (open data). No → app directory.
+
+**Test 1:** Can you delete `.<app-name>/config/` and `.<app-name>/cache/` without losing any user data or irreplaceable decisions?
+
+**Test 2:** Is every frontmatter property meaningful outside the app that created it?
+
+**Test 3:** Are irreplaceable user decisions (manual corrections, feedback) in `state/`, not mixed into `cache/` or content files?
 
 ## Principle 6: Tool-Agnostic Identity
 
@@ -78,8 +90,11 @@ Use these terms consistently across all outputs:
 | **Embed / Transclusion** | `![[target]]` syntax for inline content inclusion |
 | **Block reference** | `#^id` syntax for linking to a specific paragraph |
 | **Tag** | `#category` or `#category/sub` for hierarchical classification |
-| **Index / Cache** | Derived data structure regenerable from source files |
-| **Config directory** | Hidden directory for app-level settings, separate from data |
+| **Open data** | Content and metadata meaningful outside the app that created it |
+| **App directory** | Hidden `.<app-name>/` directory containing all application data (config, state, cache) |
+| **App state** | Operational data with irreplaceable user decisions, stored in `.<app-name>/state/` |
+| **Cache** | Derived data structure regenerable from source files, stored in `.<app-name>/cache/` |
+| **Frontmatter boundary** | The test: "Would a different Markdown-based tool find this field meaningful?" |
 | **Schema enforcement** | Type constraints on properties, applied vault-wide |
 | **Link resolution** | Algorithm for turning a link target into a file path |
 | **Graceful degradation** | Property of data that remains useful in unsupported tools |

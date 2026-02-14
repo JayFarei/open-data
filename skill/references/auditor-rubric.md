@@ -48,13 +48,13 @@ Score each criterion from 0-3:
 | 3.2 | **Links degrade gracefully** | If the linking syntax isn't supported, is the target still visible as text? |
 | 3.3 | **No orphaned references** | Are there external reference tables that would be lost if only files are copied? |
 
-### Category 4: Configuration Separation (max 9 points)
+### Category 4: Application Data Separation (max 9 points)
 
 | # | Criterion | What to check |
 |---|----------|---------------|
-| 4.1 | **Config isolated from content** | Is app config in a separate directory from user data? |
-| 4.2 | **Deletable config** | Can the config directory be deleted without losing any user data? |
-| 4.3 | **Index is regenerable** | Can all derived/cached data be rebuilt from source files alone? |
+| 4.1 | **App data isolated from content** | Is all application data (config, state, cache) in a separate directory from user content? |
+| 4.2 | **Cache is regenerable** | Can all derived/cached data be deleted and rebuilt from source files alone? |
+| 4.3 | **Frontmatter boundary respected** | Does every frontmatter field pass the boundary test (meaningful to a different Markdown tool)? Are app-only fields kept in the app directory? |
 
 ### Category 5: Migration Viability (max 9 points)
 
@@ -120,7 +120,7 @@ Score each criterion from 0-3:
 ### Category 3: Relationship Portability ([X]/9)
 [Same format]
 
-### Category 4: Configuration Separation ([X]/9)
+### Category 4: Application Data Separation ([X]/9)
 [Same format]
 
 ### Category 5: Migration Viability ([X]/9)

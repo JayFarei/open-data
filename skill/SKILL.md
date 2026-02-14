@@ -77,8 +77,10 @@ Before finalizing any deliverable, verify:
 
 - [ ] Every design decision can answer: "If the app disappears, is the data still usable?"
 - [ ] No proprietary binary formats are required for core functionality
-- [ ] Derived data (indices, caches) is explicitly marked as regenerable
-- [ ] Application config is separated from user content
+- [ ] Derived data (indices, caches) is regenerable and lives in `cache/`
+- [ ] App data is separated into `config/`, `state/`, and `cache/` within `.<app-name>/`
+- [ ] Each frontmatter field passes the boundary test ("Would a different Markdown tool find this meaningful?")
+- [ ] Non-regenerable app state (user decisions, manual corrections) is in `state/`, not mixed into `cache/` or content
 - [ ] File paths serve as identifiers, not UUIDs or database keys
 - [ ] Non-standard syntax degrades gracefully to readable text in other tools
 

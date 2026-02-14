@@ -66,7 +66,7 @@ source: [text]
 }
 ```
 
-Location: `.config/types.json`
+Location: `.<app-name>/config/types.json`
 
 ---
 
@@ -74,12 +74,15 @@ Location: `.config/types.json`
 
 ```
 [vault-name]/
-├── .config/                    # Application configuration
-│   ├── app.json                # Core settings
-│   ├── types.json              # Property type registry
-│   └── plugins/                # Plugin/extension settings
-├── .index/                     # Derived data (regenerable, gitignored)
-│   └── [index files]
+├── .<app-name>/                # All application data
+│   ├── config/                 # Settings & preferences
+│   │   ├── app.json            # Core settings
+│   │   ├── types.json          # Property type registry
+│   │   └── plugins/            # Plugin/extension settings
+│   ├── state/                  # Irreplaceable user decisions
+│   │   └── [state files]
+│   └── cache/                  # Regenerable derived data (gitignored)
+│       └── [index files]
 ├── [collection-1]/             # Entity collection
 │   └── [files]
 ├── [collection-2]/
@@ -99,8 +102,10 @@ Location: `.config/types.json`
 | Slugs | lowercase, hyphens, no spaces | `my-project-name` |
 | Temporal files | ISO 8601, hyphens for time | `2025-01-15T10-30-00` |
 | Collections | plural, lowercase, hyphens | `daily-notes/` |
-| Config | dotfile directory | `.config/` |
-| Index | dotfile directory | `.index/` |
+| App directory | dotfile directory | `.<app-name>/` |
+| App config | subdirectory of app directory | `.<app-name>/config/` |
+| App state | subdirectory of app directory | `.<app-name>/state/` |
+| Cache | subdirectory of app directory | `.<app-name>/cache/` |
 | Templates | underscore prefix | `_templates/` |
 
 ### 2.2 File System Rules
@@ -178,7 +183,7 @@ Location: `.config/types.json`
 ### 5.1 Index Storage
 
 - Format: [JSON / SQLite / In-memory]
-- Location: `.index/`
+- Location: `.<app-name>/cache/`
 - Rebuild trigger: [On startup / On file change / Manual command]
 
 ### 5.2 Indexed Fields
@@ -234,26 +239,42 @@ Location: `.config/types.json`
 
 ---
 
-## 7. Configuration Separation
+## 7. Application Data Separation
 
-### 7.1 Config Directory Structure
+### 7.1 App Directory Structure
 
 ```
-.config/
-├── app.json          # [Describe contents]
-├── types.json        # Property type registry
-├── plugins/          # Per-plugin settings
-│   └── [plugin-id]/
-│       └── data.json
-└── [other config files]
+.<app-name>/
+├── config/               # Settings & preferences (deletable, git-tracked)
+│   ├── app.json          # [Describe contents]
+│   ├── types.json        # Property type registry
+│   ├── plugins/          # Per-plugin settings
+│   │   └── [plugin-id]/
+│   │       └── data.json
+│   └── workspace.json    # Ephemeral UI state (gitignored)
+├── state/                # Irreplaceable user decisions (NOT deletable, git-tracked)
+│   └── [state files]     # Manual corrections, feedback, merge choices
+└── cache/                # Regenerable derived data (deletable, gitignored)
+    ├── search-index.json
+    ├── link-graph.json
+    └── [other derived files]
 ```
 
-### 7.2 What Is NOT Config
+### 7.2 Classification Flowchart
 
-These belong in user content, not `.config/`:
+For each piece of application data, ask:
+
+1. **Is it a setting or preference?** → `config/`
+2. **Does it contain irreplaceable user decisions?** (manual corrections, feedback, merge choices) → `state/`
+3. **Can it be regenerated from source files?** → `cache/`
+4. **Would a different Markdown tool find it meaningful?** → Maybe it belongs in **frontmatter**, not the app directory at all
+
+### 7.3 What Is NOT App Data
+
+These belong in user content, not `.<app-name>/`:
 - Templates (they are user-authored content)
 - Schema definitions (they describe user data)
-- Index/derived data (belongs in `.index/`)
+- Any metadata that passes the frontmatter boundary test
 
 ---
 
@@ -262,11 +283,12 @@ These belong in user content, not `.config/`:
 ### 8.1 .gitignore
 
 ```
-# Derived data (always regenerable)
-.index/
+# Regenerable cache (always rebuildable)
+.<app-name>/cache/
 
 # Ephemeral application state
-.config/workspace.json
+.<app-name>/config/workspace.json
+.<app-name>/config/secrets.*
 
 # OS artifacts
 .DS_Store
@@ -278,7 +300,8 @@ Thumbs.db
 
 - All `.md` files (user content)
 - All assets (images, PDFs, etc.)
-- `.config/` (minus ephemeral state)
+- `.<app-name>/config/` (minus ephemeral state and secrets)
+- `.<app-name>/state/` (irreplaceable user decisions)
 - `_templates/`, `_schemas/`
 
 ---
