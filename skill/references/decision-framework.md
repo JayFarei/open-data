@@ -260,10 +260,20 @@ The index is the derived data layer that makes files queryable. Define what it t
 
 | Approach | Persistence | Regeneration | Use case |
 |----------|-------------|-------------|----------|
-| In-memory only | None — rebuilt on startup | Always fresh | Small vaults, CLI tools |
+| In-memory only | None, rebuilt on startup | Always fresh | Small vaults, CLI tools |
+| In-memory vault mirror | None, rebuilt on startup | Always fresh | API-serving apps where navigation latency matters (see Pattern 9) |
 | JSON file in `.<app-name>/cache/` | File-based | On demand | Medium vaults, simple tooling |
 | SQLite in `.<app-name>/cache/` | File-based | On demand | Large vaults, complex queries |
 | IndexedDB | Browser storage | On demand | Web/Electron apps (Obsidian's approach) |
+
+**In-memory vault mirror (Pattern 9):** When your application serves vault data
+through an API (HTTP or IPC), consider loading all entities into a dict/Map at
+startup rather than reading from disk on each request. This is distinct from a
+search index: the mirror holds the full assembled entity (frontmatter + body +
+merged session data), not just queryable metadata. The tradeoff is startup time
+(1-3s for ~2,000 files) versus per-request latency (0ms vs. 50-200ms). For vaults
+under ~100MB total, the startup cost is negligible and every subsequent read
+becomes a dict lookup.
 
 **Critical rule:** The index MUST be regenerable from source files alone. It is
 a cache, not a data store. If `.<app-name>/cache/` is deleted, the system must rebuild it
@@ -374,9 +384,10 @@ After working through all decisions, summarize in this format:
 - Resolution algorithm: [shortest-path / relative / absolute]
 
 ### Index / Cache
-- Storage: [memory / JSON / SQLite / IndexedDB]
+- Storage: [memory / vault-mirror / JSON / SQLite / IndexedDB]
 - Location: `.<app-name>/cache/`
 - Rebuild trigger: [startup / file-change / manual]
+- Vault mirror: [yes/no — if yes, all reads served from memory, writes are write-through]
 
 ### App State
 - Location: `.<app-name>/state/`

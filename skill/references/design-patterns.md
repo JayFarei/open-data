@@ -370,6 +370,62 @@ vault/
 
 ---
 
+## Pattern 9: In-Memory Vault Mirror
+
+**Structure:** On application startup, load every file in the vault into an
+in-memory data structure (dictionary/Map keyed by entity ID). All reads are
+served from memory. Writes go to both memory and disk. The filesystem becomes
+a persistence layer, not a query engine.
+
+```
+Startup:
+  disk (2,000 files, ~13MB) ──load──▶ memory mirror (Dict[id, entity])
+
+Read path:
+  request ──▶ mirror.get(id)  →  0ms, no disk I/O
+
+Write path:
+  request ──▶ write to disk (existing logic)
+         ──▶ mirror[id] = updated_entity
+```
+
+**When to use:** Any application that serves a file-based vault through an API
+(HTTP, IPC, or in-process) where navigation latency matters. The pattern becomes
+essential once users notice that switching between entities triggers disk I/O,
+Markdown parsing, session file merging, and serialization on every click.
+
+**Boundary:** This applies to the **application read path**, not to the data format.
+The files on disk remain standard Markdown with YAML frontmatter. The mirror is
+a runtime optimization, not a storage format.
+
+**Implementation notes:**
+- The mirror is a cache in `.<app-name>/cache/` terms: fully regenerable from
+  source files. If the process restarts, it reloads from disk.
+- Write-through is mandatory: every mutation updates both disk and mirror so
+  they never diverge.
+- The startup cost is the price of this pattern. For ~2,000 files / ~13MB, expect
+  1-3 seconds. This is acceptable because it happens once, and the alternative is
+  1.5 seconds on every navigation.
+
+**The three-layer merge problem:** When app state (session files in `state/`)
+holds metadata while vault files (Markdown in `data/`) hold content, the merge
+of these two layers is the performance bottleneck. Each read requires: find vault
+file, parse Markdown, parse frontmatter, read session file, merge fields, serialize.
+The mirror solves this by merging once at startup and keeping the merged result
+in memory.
+
+**Tradeoffs:**
+- ✅ Navigation becomes instantaneous (dict lookup vs. disk I/O + parsing)
+- ✅ No change to the on-disk format, all files remain standard Markdown
+- ✅ Write-through keeps memory and disk in sync without background jobs
+- ✅ Eliminates the three-layer merge cost on every read
+- ⚠️ Memory usage equals the total size of all entities (acceptable up to ~100MB)
+- ⚠️ Startup time increases linearly with vault size
+- ⚠️ Concurrent external edits (e.g., user editing files in Obsidian) won't be
+  reflected until the mirror is refreshed or file watchers trigger a reload
+
+---
+
 ## Pattern Combinations
 
 Most real systems combine multiple patterns:
@@ -382,6 +438,14 @@ Patterns 1 + 2 + 3 + 4 + 6 + 8
 - Hub notes for curated topic views (Pattern 4)
 - Extract metadata from URLs, timestamps, source identifiers (Pattern 6)
 - Three-layer app data separation for pipeline state, config, and cache (Pattern 8)
+
+**Multi-Model Conversation System:**
+Patterns 1 + 2 + 7 + 8 + 9
+- File-per-entity for conversations across modes: council, notes, memos, diagrams (Pattern 1)
+- Directory-as-collection for mode-based organization (Pattern 2)
+- Sidecars for generated images alongside diagram Markdown (Pattern 7)
+- Three-layer separation: session metadata in state/, search index in cache/ (Pattern 8)
+- In-memory vault mirror for instant conversation switching (Pattern 9)
 
 **Project Management / CRM:**
 Patterns 1 + 2 + 5 + 4

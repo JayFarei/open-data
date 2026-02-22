@@ -21,7 +21,7 @@ is the schema, and conventions replace proprietary formats.
 Before producing any output, read the relevant reference files:
 
 - `references/principles.md` — The 7 non-negotiable futureproof principles
-- `references/design-patterns.md` — 8 reusable persistence patterns with tradeoffs
+- `references/design-patterns.md` — 9 reusable persistence patterns with tradeoffs
 - `references/decision-framework.md` — Step-by-step architectural decision guide
 - `references/obsidian-spec.md` — Obsidian data model technical reference
 

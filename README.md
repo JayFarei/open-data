@@ -28,7 +28,7 @@ A skill for designing persistence systems where user data outlives any particula
 | `skill/references/principles.md` | 7 non-negotiable futureproof persistence principles |
 | `skill/references/auditor-rubric.md` | 60-point scoring system across 20 criteria |
 | `skill/references/decision-framework.md` | 8-step architectural decision guide |
-| `skill/references/design-patterns.md` | 8 reusable persistence patterns with tradeoffs |
+| `skill/references/design-patterns.md` | 9 reusable persistence patterns with tradeoffs |
 | `skill/references/obsidian-spec.md` | Obsidian data model technical reference |
 | `skill/references/persistence-spec.md` | Persistence specification template |
 

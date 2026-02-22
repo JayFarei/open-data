@@ -61,6 +61,12 @@ and the system must handle that explicitly.
 
 **Test:** Does any file reference an opaque ID that has no meaning outside the app?
 
+**Migration hazard: identity-scheme changes.** When renaming files to a new
+identity scheme, different layers of the system may still reference the old
+names. Content files, app state, and the filesystem can fall out of sync,
+creating broken references. Mitigate by updating all references atomically
+during migration rather than maintaining a permanent old-to-new mapping layer.
+
 ## Principle 7: Composability
 
 The data model must be layerable. Each layer is independently valuable:

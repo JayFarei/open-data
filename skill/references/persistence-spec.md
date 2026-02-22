@@ -182,7 +182,7 @@ Location: `.<app-name>/config/types.json`
 
 ### 5.1 Index Storage
 
-- Format: [JSON / SQLite / In-memory]
+- Format: [JSON / SQLite / In-memory / Vault mirror]
 - Location: `.<app-name>/cache/`
 - Rebuild trigger: [On startup / On file change / Manual command]
 
