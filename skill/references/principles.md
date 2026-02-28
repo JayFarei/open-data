@@ -76,8 +76,32 @@ The data model must be layerable. Each layer is independently valuable:
 - **Layer 2:** Wikilinks add relationships between files
 - **Layer 3:** Indices add queryability (search, graph, backlinks)
 - **Layer 4:** Plugins add domain-specific features
+- **Layer 5:** Agents add reasoning, chaining, and bulk semantic operations
 
 **Test:** Does each layer add value without requiring the layers above it?
+
+## Principle 8: Apps as Accelerators
+
+The open data layer exists so you can adopt apps without fear of lock-in. An app
+that indexes your files, controls a UI, or syncs data remotely is a legitimate
+power tool, not a threat. Use it. The principles above guarantee you can walk
+away; this principle says you shouldn't have to.
+
+Four things an app can offer that raw files can't:
+
+1. **Index access** — querying the app's index is faster than grep for tasks like finding orphans or running structured queries
+2. **UI control** — screenshots, evals, visual inspection, useful for development workflows
+3. **Remote services** — sync, publish, and other cloud features that operate on the same open data
+4. **Agent surface** — a CLI or API that lets reasoning tools leverage the app's
+   index without reimplementing parsing, resolution, or graph traversal
+
+Open data means agents can bypass the app entirely. A good agent surface means
+they won't want to. The CLI, headless mode, or API becomes the path of least
+resistance, offering the app's speed and capability without requiring its GUI.
+This is the strategic complement to portability: make the app worth using, not
+just safe to leave.
+
+**Test:** Is the app adding speed or capability on top of data you could still read without it?
 
 ---
 
@@ -104,3 +128,10 @@ Use these terms consistently across all outputs:
 | **Schema enforcement** | Type constraints on properties, applied vault-wide |
 | **Link resolution** | Algorithm for turning a link target into a file path |
 | **Graceful degradation** | Property of data that remains useful in unsupported tools |
+| **Read path** | The route a consumer takes to discover and retrieve data (glob + cat, index query, API call) |
+| **Write path** | The route a consumer takes to create or modify data (file creation, API POST, form submit) |
+| **Consumer** | Any human, app, agent, or pipeline that reads from or writes to the persistence layer |
+| **Agent** | An LLM-powered tool or script that operates on the data via CLI or API |
+| **Pipeline** | An automated process that bulk-creates, transforms, or publishes data |
+| **Publish pipeline** | A derived-data process that transforms source files into a different output format |
+| **Access layer** | The set of interfaces (filesystem, CLI, API, UI) through which consumers interact with persisted data |

@@ -12,10 +12,10 @@ This repo is a **Claude Code skill** (installed via `npx skills add JayFarei/ope
 skill/
 ├── SKILL.md                          # Main skill definition (entry point)
 └── references/
-    ├── principles.md                 # 7 non-negotiable futureproof persistence principles
+    ├── principles.md                 # 8 non-negotiable futureproof persistence principles
     ├── design-patterns.md            # 9 reusable persistence patterns
-    ├── decision-framework.md         # 8-step architectural decision guide
-    ├── auditor-rubric.md             # 60-point scoring rubric (20 criteria, 6 categories)
+    ├── decision-framework.md         # 9-step architectural decision guide
+    ├── auditor-rubric.md             # 69-point scoring rubric (23 criteria, 7 categories)
     ├── obsidian-spec.md              # Obsidian data model technical reference
     └── persistence-spec.md           # Persistence specification template
 ```
@@ -32,9 +32,9 @@ Each workflow instructs Claude to read specific reference files before producing
 
 ## Key Conventions
 
-- The 7 principles in `principles.md` are **non-negotiable**. Every design recommendation must pass the tests listed there (e.g., "Can you `ls` and `cat` your way to understanding the data?").
+- The 8 principles in `principles.md` are **non-negotiable**. Every design recommendation must pass the tests listed there (e.g., "Can you `ls` and `cat` your way to understanding the data?").
 - Use the **Design Vocabulary** table at the bottom of `principles.md` for consistent terminology (vault, note, frontmatter, property, wikilink, backlink, etc.).
-- The audit rubric uses a strict 0-3 scoring scale per criterion. Scores map to letter grades: 51-60 = A, 41-50 = B, 31-40 = C, 21-30 = D, 0-20 = F.
+- The audit rubric uses a strict 0-3 scoring scale per criterion. Scores map to letter grades: 59-69 = A, 48-58 = B, 36-47 = C, 24-35 = D, 0-23 = F.
 - Pattern numbers (Pattern 1-9) in `design-patterns.md` are referenced by number throughout the skill. Don't renumber them.
 
 ## Editing Guidelines

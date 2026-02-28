@@ -20,7 +20,7 @@ is the schema, and conventions replace proprietary formats.
 
 Before producing any output, read the relevant reference files:
 
-- `references/principles.md` — The 7 non-negotiable futureproof principles
+- `references/principles.md` — The 8 non-negotiable futureproof principles
 - `references/design-patterns.md` — 9 reusable persistence patterns with tradeoffs
 - `references/decision-framework.md` — Step-by-step architectural decision guide
 - `references/obsidian-spec.md` — Obsidian data model technical reference
@@ -42,7 +42,7 @@ Do not assume — the user's domain matters enormously.
 
 1. Read `references/design-patterns.md` and `references/decision-framework.md`
 2. Ask the user about entity types, expected volumes, creation method, and lifecycle
-3. Walk through the 8 decisions in `references/decision-framework.md` with the user
+3. Walk through the 9 decisions in `references/decision-framework.md` with the user
 4. Propose a directory structure, naming conventions, and metadata schema
 5. Produce a persistence specification using the template in `references/persistence-spec.md`
 6. Validate every decision against the principles in `references/principles.md`
@@ -51,9 +51,9 @@ Expected output: A complete persistence specification document.
 
 ### Step 2B: Audit an Existing System
 
-1. Read `references/auditor-rubric.md` for the 60-point scoring criteria
+1. Read `references/auditor-rubric.md` for the 69-point scoring criteria
 2. Ask the user to describe their current persistence approach
-3. Score each of the 20 criteria (6 categories) from 0-3
+3. Score each of the 23 criteria (7 categories) from 0-3
 4. Identify lock-in points, proprietary dependencies, and portability risks
 5. Produce a scored audit report with specific remediation recommendations
 6. If migration is needed, propose incremental steps
@@ -83,6 +83,8 @@ Before finalizing any deliverable, verify:
 - [ ] Non-regenerable app state (user decisions, manual corrections) is in `state/`, not mixed into `cache/` or content
 - [ ] File paths serve as identifiers, not UUIDs or database keys
 - [ ] Non-standard syntax degrades gracefully to readable text in other tools
+- [ ] Consumer roles and access paths are documented (who reads, who writes, how)
+- [ ] An agent can discover, read, and create entities using filesystem conventions alone
 
 ## Examples
 
@@ -107,7 +109,7 @@ User says: "My team uses Notion for everything. How locked in are we?"
 
 Actions:
 1. Read auditor-rubric.md
-2. Score Notion against 20 criteria (typical result: ~18/60, F rating)
+2. Score Notion against 23 criteria (typical result: ~19/69, F rating)
 3. Identify critical lock-in: cloud-only, proprietary block model, limited export
 4. Propose migration path: Notion export → Markdown conversion → open vault
 

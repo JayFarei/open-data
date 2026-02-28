@@ -335,7 +335,45 @@ Estimated migration effort: [Hours / complexity]
 
 ---
 
-## 10. Appendices
+## 10. Access Layer
+
+How consumers read from and write to this persistence layer.
+
+### 10.1 Consumer Roles
+
+| Role | Examples | Read pattern | Write pattern |
+|------|----------|-------------|--------------|
+| **Human (editor)** | [e.g., Obsidian, VS Code, text editor] | Open file, browse, search | Direct edit, save |
+| **Human (browser)** | [e.g., Published site, dashboard] | HTTP, rendered views | None (read-only) |
+| **App (index)** | [e.g., Obsidian, custom app] | MetadataCache, in-memory mirror | Write-through to disk |
+| **Agent (CLI)** | [e.g., Claude Code, scripts, CI] | `ls`, `cat`, `grep`, frontmatter parse | Create/edit files via filesystem |
+| **Pipeline** | [e.g., Ingestion, ETL, publish] | Glob + parse | Bulk file creation |
+
+[Fill in only the roles that apply to this system.]
+
+### 10.2 Agent Interface
+
+If agents (LLMs, CLI tools, scripts) will operate on this data:
+
+- **Discovery:** [How does an agent find what exists? e.g., `ls collections/`, glob patterns, index API]
+- **Read:** [How does an agent read an entity? e.g., `cat path/to/entity.md`, API endpoint]
+- **Write:** [How does an agent create/modify? e.g., write file with frontmatter template]
+- **Validate:** [How does an agent confirm its write was correct? e.g., schema lint, re-parse]
+- **Conventions:** [Naming rules, required frontmatter fields, file placement rules the agent must follow]
+
+### 10.3 Publish Pipeline
+
+If the data has a publish or output step:
+
+- **Source:** [Which files/collections feed the pipeline]
+- **Transform:** [Any conversion steps: Markdown to HTML, frontmatter to structured data]
+- **Destination:** [Where published output goes]
+- **Trigger:** [Manual, git push, file watcher, scheduled]
+- **Regenerable:** [Yes, publish output is derived data, not canonical]
+
+---
+
+## 11. Appendices
 
 ### A. Example Files
 

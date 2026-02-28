@@ -359,6 +359,26 @@ Thumbs.db
 
 ---
 
+## Decision 9: Who Are the Consumers?
+
+Enumerate every human, app, agent, and pipeline that will read from or write to this data.
+
+**Questions to answer:**
+- Who reads this data? (Human in editor, human via published site, app via index, agent via CLI, pipeline)
+- Who writes to this data? (Human, ingestion pipeline, agent, API)
+- What is the read path for each consumer? (Direct file access, index query, API call)
+- What is the write path for each consumer? (File creation, API, bulk import)
+- Will agents (LLMs, scripts) need to discover, read, create, or modify entities?
+- Is there a publish pipeline that transforms source files into a different output?
+
+**Decision output:** A consumer matrix listing each role, its read path, write path, and any special requirements.
+
+**Why this matters:** The open data layer guarantees portability, but portability without accessibility is incomplete. If an agent cannot discover files, parse frontmatter, or validate its writes, the data is portable but not operable. Principle 8 says the app should add speed and capability; this decision defines what that means concretely.
+
+**Rule of thumb:** Every consumer should be able to operate using only the filesystem and documented conventions. If a consumer requires an app-specific API to function, that API becomes a lock-in point unless the underlying files remain the source of truth.
+
+---
+
 ## Decision Summary Template
 
 After working through all decisions, summarize in this format:
@@ -402,4 +422,11 @@ After working through all decisions, summarize in this format:
 - Tracked: [list, including `.<app-name>/config/` and `.<app-name>/state/`]
 - Ignored: [list, including `.<app-name>/cache/`]
 - Conflict strategy: [describe]
+
+### Consumers
+- Roles: [human-editor, human-browser, app, agent, pipeline]
+- Read paths: [describe per role]
+- Write paths: [describe per role]
+- Agent requirements: [discovery, read, write, validate conventions]
+- Publish pipeline: [describe if applicable]
 ```

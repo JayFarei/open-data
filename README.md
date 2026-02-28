@@ -17,7 +17,7 @@ npx skills add JayFarei/open-data
 A skill for designing persistence systems where user data outlives any particular application. Three workflows:
 
 - **Design** a new persistence layer: walk through entity modeling, directory structure, naming conventions, metadata schemas, and produce a complete persistence specification
-- **Audit** an existing system: score it against a 60-point rubric across 6 categories (data format, file system independence, relationship portability, configuration separation, migration viability, extension safety)
+- **Audit** an existing system: score it against a 69-point rubric across 7 categories (data format, file system independence, relationship portability, configuration separation, migration viability, extension safety, operational accessibility)
 - **Co-design** a specific decision: compare architectural options with explicit tradeoff analysis, stress-test against open data principles, and document as an Architecture Decision Record
 
 ## What's included
@@ -25,9 +25,9 @@ A skill for designing persistence systems where user data outlives any particula
 | File | Description |
 |------|-------------|
 | `skill/SKILL.md` | Main skill definition with workflows, examples, and validation checklist |
-| `skill/references/principles.md` | 7 non-negotiable futureproof persistence principles |
-| `skill/references/auditor-rubric.md` | 60-point scoring system across 20 criteria |
-| `skill/references/decision-framework.md` | 8-step architectural decision guide |
+| `skill/references/principles.md` | 8 non-negotiable futureproof persistence principles |
+| `skill/references/auditor-rubric.md` | 69-point scoring system across 23 criteria |
+| `skill/references/decision-framework.md` | 9-step architectural decision guide |
 | `skill/references/design-patterns.md` | 9 reusable persistence patterns with tradeoffs |
 | `skill/references/obsidian-spec.md` | Obsidian data model technical reference |
 | `skill/references/persistence-spec.md` | Persistence specification template |

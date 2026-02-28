@@ -71,7 +71,15 @@ Score each criterion from 0-3:
 | 6.1 | **Plugins don't own data** | Do plugins/extensions store their data in the same open format? |
 | 6.2 | **Core works without plugins** | Is the system usable (at reduced functionality) without any plugins? |
 
-**Total possible score: 60 points**
+### Category 7: Operational Accessibility (max 9 points)
+
+| # | Criterion | What to check |
+|---|----------|---------------|
+| 7.1 | **CLI discoverability** | Can an agent find entities using filesystem tools alone (ls, glob)? Are naming conventions consistent enough for programmatic discovery? |
+| 7.2 | **Programmatic read/write** | Can an agent read entities (parse frontmatter, extract metadata) and write valid entities (create files with correct frontmatter, naming, placement) without app-specific tooling? |
+| 7.3 | **Automation-safe conventions** | Are naming conventions, required fields, and directory placement rules documented explicitly enough that a script or agent can follow them without human judgment? |
+
+**Total possible score: 69 points**
 
 ---
 
@@ -79,11 +87,11 @@ Score each criterion from 0-3:
 
 | Score | Rating | Assessment |
 |-------|--------|-----------|
-| 51-60 | **A — Futureproof** | Data is fully portable, tool-agnostic, and survivable |
-| 41-50 | **B — Mostly Open** | Minor lock-in points that are easy to remediate |
-| 31-40 | **C — Partially Open** | Significant proprietary elements, but data is recoverable |
-| 21-30 | **D — At Risk** | Substantial lock-in, migration would require significant effort |
-| 0-20 | **F — Locked In** | Data is effectively trapped in a proprietary system |
+| 59-69 | **A — Futureproof** | Data is portable, tool-agnostic, and agent-operable |
+| 48-58 | **B — Mostly Open** | Minor lock-in or accessibility gaps, easy to remediate |
+| 36-47 | **C — Partially Open** | Significant proprietary elements, but data is recoverable |
+| 24-35 | **D — At Risk** | Substantial lock-in, migration would require significant effort |
+| 0-23 | **F — Locked In** | Data is effectively trapped in a proprietary system |
 
 ---
 
@@ -98,7 +106,7 @@ Score each criterion from 0-3:
 
 ## Summary
 
-**Overall Score:** [X] / 60 ([Rating])
+**Overall Score:** [X] / 69 ([Rating])
 
 **Critical Findings:**
 - [Most important issues]
@@ -127,6 +135,9 @@ Score each criterion from 0-3:
 [Same format]
 
 ### Category 6: Extension Safety ([X]/6)
+[Same format]
+
+### Category 7: Operational Accessibility ([X]/9)
 [Same format]
 
 ## Remediation Recommendations
@@ -159,14 +170,14 @@ anchors when auditing custom systems.
 
 | System | Approximate Score | Key Lock-in Points |
 |--------|------------------|-------------------|
-| Obsidian | 55/60 | Wikilink syntax, callouts, some plugin formats |
-| Logseq | 48/60 | Outline-first format, custom Markdown extensions |
-| Notion | 18/60 | Cloud-only, proprietary block model, limited export |
-| Evernote | 15/60 | Proprietary ENEX format, cloud-dependent |
-| Roam Research | 22/60 | Cloud-only, JSON export but non-standard structure |
-| Apple Notes | 10/60 | No file access, iCloud-locked, no export API |
-| Plain Markdown in Git | 58/60 | No built-in relationships or metadata schema |
-| Jekyll/Hugo (static sites) | 52/60 | Standard Markdown + YAML, some template lock-in |
+| Obsidian | 63/69 | Wikilink syntax, callouts, some plugin formats |
+| Logseq | 54/69 | Outline-first format, custom Markdown extensions |
+| Notion | 19/69 | Cloud-only, proprietary block model, limited export |
+| Evernote | 16/69 | Proprietary ENEX format, cloud-dependent |
+| Roam Research | 24/69 | Cloud-only, JSON export but non-standard structure |
+| Apple Notes | 10/69 | No file access, iCloud-locked, no export API |
+| Plain Markdown in Git | 67/69 | No built-in relationships or metadata schema |
+| Jekyll/Hugo (static sites) | 60/69 | Standard Markdown + YAML, some template lock-in |
 
 These benchmarks help calibrate expectations: a score of 50+ is excellent,
 and even Obsidian's non-standard extensions carry minor portability costs.
